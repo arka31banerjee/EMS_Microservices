@@ -19,7 +19,7 @@ import com.employee.management.entity.Employee;
 import com.employee.management.service.EmployeeService;
 
 @RestController
-@RequestMapping("/employee-service")
+@RequestMapping("/employee")
 public class EmployeeController {
 	
 	@Autowired
