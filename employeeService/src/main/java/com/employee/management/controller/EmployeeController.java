@@ -68,10 +68,11 @@ public class EmployeeController {
         }
     }
     
-    private EmployeeResponse fallbackEmployeeService(Throwable throwable) {
+    public ResponseEntity<EmployeeResponse> fallbackEmployeeService(Throwable throwable) {
     	EmployeeResponse response = new EmployeeResponse();
     	response.setMessage("Can't Process request! Please try after 5 mins");
-        return response;
+        ResponseEntity.internalServerError().build();
+		return ResponseEntity.ofNullable(response);
     }
 }
 
