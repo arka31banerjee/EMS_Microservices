@@ -14,6 +14,7 @@ import com.employee.management.dto.EmployeeResponse;
 import com.employee.management.entity.Employee;
 import com.employee.management.repository.EmployeeRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -33,6 +34,7 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
+    
     public EmployeeResponse getEmployeeById(Long id) {
     	log.info("Fetching employee by id: {}", id);
     	EmployeeResponse response = new EmployeeResponse();
@@ -43,6 +45,7 @@ public class EmployeeService {
     	}
     	response.setEmployee(employee);
     	response.setDepartment(departmentValidation(employee));
+    	response.setMessage("Search call successful");
     	return response;
     }
 
@@ -57,6 +60,7 @@ public class EmployeeService {
         response.setDepartment(departmentValidation(employee));
         if(response.getDepartment()!=null) {
         	response.setEmployee(employeeRepository.save(employee));
+        	response.setMessage("Save call successful");
         	return response;
         }
         else
@@ -79,6 +83,7 @@ public class EmployeeService {
             }
             updatedEmployee.setDepartmentId(departmentId);
            response.setEmployee(employeeRepository.save(updatedEmployee));
+           response.setMessage("Update call successful");
            return response;
         } else {
         	log.error("No such Employee to update with ID : {}",id);
@@ -97,4 +102,5 @@ public class EmployeeService {
             return false;
         }
     }
+    
 }

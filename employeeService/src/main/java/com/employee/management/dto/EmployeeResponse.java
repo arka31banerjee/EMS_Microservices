@@ -7,4 +7,5 @@ import lombok.Data;
 public class EmployeeResponse {
 	private Employee employee;
 	private Department department;
+	private String message;
 }

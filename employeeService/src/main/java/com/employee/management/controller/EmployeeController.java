@@ -18,6 +18,8 @@ import com.employee.management.dto.EmployeeResponse;
 import com.employee.management.entity.Employee;
 import com.employee.management.service.EmployeeService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
@@ -25,12 +27,13 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 
-	@GetMapping("/")
+	@GetMapping("/all")
 	public ResponseEntity<List<Employee>> getEmployees(){
 		List<Employee> employees = employeeService.getAllEmployees();
 		return ResponseEntity.ok(employees);
 	}
     @GetMapping("/find/{id}")
+    @CircuitBreaker(name = "fallbackMechanismEmpService", fallbackMethod = "fallbackEmployeeService")
     public ResponseEntity<EmployeeResponse> getEmployeeById(@PathVariable Long id) {
     	EmployeeResponse emp = employeeService.getEmployeeById(id);
     	if(emp!=null)
@@ -63,6 +66,12 @@ public class EmployeeController {
         }else {
             return ResponseEntity.notFound().build();
         }
+    }
+    
+    private EmployeeResponse fallbackEmployeeService(Throwable throwable) {
+    	EmployeeResponse response = new EmployeeResponse();
+    	response.setMessage("Can't Process request! Please try after 5 mins");
+        return response;
     }
 }
 
