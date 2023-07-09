@@ -14,7 +14,6 @@ import com.employee.management.dto.EmployeeResponse;
 import com.employee.management.entity.Employee;
 import com.employee.management.repository.EmployeeRepository;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
