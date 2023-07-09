@@ -2,6 +2,8 @@ package com.api.gateway.filter;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -12,6 +14,8 @@ import com.api.gateway.util.JwtUtil;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -27,6 +31,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     "/user/token",
                     "/eureka").stream().noneMatch(uriPart -> exchange.getRequest().getURI().getPath().contains(uriPart))) {
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                	logger.error("missing authorization header");
                     throw new RuntimeException("missing authorization header");
                 }
 
@@ -37,7 +42,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 try {
                     jwtUtil.validateToken(authHeader);
                 } catch (Exception e) {
-                    System.out.println("invalid access...!");
+                	logger.error("invalid access...!");
                     throw new RuntimeException("un authorized access to application");
                 }
             }
